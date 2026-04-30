@@ -1,0 +1,1271 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Riyo and Co Studio - POS System</title>
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+     <style>
+         :root {
+             --primary: #1a1a2e;
+             --secondary: #16213e;
+             --accent: #e94560;
+             --success: #00d9a5;
+             --warning: #ffc107;
+             --info: #3498db;
+             --light: #f8f9fa;
+             --dark: #212529;
+             --gray: #6c757d;
+             --border: #dee2e6;
+         }
+ 
+         * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+             font-family: 'Poppins', sans-serif;
+         }
+ 
+         body {
+             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+             min-height: 100vh;
+             color: var(--light);
+         }
+ 
+         /* Header */
+         .header {
+             background: rgba(255,255,255,0.05);
+             backdrop-filter: blur(10px);
+             padding: 1rem 2rem;
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             border-bottom: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         .logo {
+             display: flex;
+             align-items: center;
+             gap: 1rem;
+         }
+ 
+         .logo-icon {
+             width: 50px;
+             height: 50px;
+             background: linear-gradient(135deg, var(--accent), #ff6b6b);
+             border-radius: 12px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 1.5rem;
+             font-weight: bold;
+         }
+ 
+         .logo h1 {
+             font-size: 1.5rem;
+             background: linear-gradient(135deg, #fff, #e94560);
+             -webkit-background-clip: text;
+             -webkit-text-fill-color: transparent;
+         }
+ 
+         .header-date {
+             color: var(--gray);
+             font-size: 0.9rem;
+         }
+ 
+         /* Navigation Tabs */
+         .nav-tabs {
+             display: flex;
+             gap: 0.5rem;
+             padding: 1rem 2rem;
+             background: rgba(255,255,255,0.03);
+         }
+ 
+         .nav-tab {
+             padding: 0.75rem 1.5rem;
+             background: transparent;
+             border: none;
+             color: var(--gray);
+             cursor: pointer;
+             border-radius: 8px;
+             font-size: 0.95rem;
+             font-weight: 500;
+             transition: all 0.3s ease;
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+         }
+ 
+         .nav-tab:hover {
+             background: rgba(255,255,255,0.1);
+             color: var(--light);
+         }
+ 
+         .nav-tab.active {
+             background: linear-gradient(135deg, var(--accent), #ff6b6b);
+             color: white;
+         }
+ 
+         /* Main Content */
+         .main-content {
+             padding: 2rem;
+         }
+ 
+         .tab-content {
+             display: none;
+             animation: fadeIn 0.3s ease;
+         }
+ 
+         .tab-content.active {
+             display: block;
+         }
+ 
+         @keyframes fadeIn {
+             from { opacity: 0; transform: translateY(10px); }
+             to { opacity: 1; transform: translateY(0); }
+         }
+ 
+         /* Dashboard */
+         .dashboard-stats {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+             gap: 1.5rem;
+             margin-bottom: 2rem;
+         }
+ 
+         .stat-card {
+             background: rgba(255,255,255,0.05);
+             border-radius: 16px;
+             padding: 1.5rem;
+             border: 1px solid rgba(255,255,255,0.1);
+             transition: transform 0.3s ease;
+         }
+ 
+         .stat-card:hover {
+             transform: translateY(-5px);
+         }
+ 
+         .stat-icon {
+             width: 60px;
+             height: 60px;
+             border-radius: 12px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 1.5rem;
+             margin-bottom: 1rem;
+         }
+ 
+         .stat-icon.income { background: rgba(0,217,165,0.2); color: var(--success); }
+         .stat-icon.sales { background: rgba(233,69,96,0.2); color: var(--accent); }
+         .stat-icon.items { background: rgba(52,152,219,0.2); color: var(--info); }
+         .stat-icon.profit { background: rgba(255,193,7,0.2); color: var(--warning); }
+ 
+         .stat-value {
+             font-size: 2rem;
+             font-weight: 700;
+             margin-bottom: 0.25rem;
+         }
+ 
+         .stat-label {
+             color: var(--gray);
+             font-size: 0.9rem;
+         }
+ 
+         .stat-change {
+             font-size: 0.85rem;
+             margin-top: 0.5rem;
+         }
+ 
+         .stat-change.positive { color: var(--success); }
+         .stat-change.negative { color: var(--accent); }
+ 
+         /* Recent Transactions */
+         .recent-section {
+             background: rgba(255,255,255,0.05);
+             border-radius: 16px;
+             padding: 1.5rem;
+             border: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         .section-title {
+             font-size: 1.25rem;
+             margin-bottom: 1rem;
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+         }
+ 
+         .transactions-list {
+             max-height: 400px;
+             overflow-y: auto;
+         }
+ 
+         .transaction-item {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 1rem;
+             background: rgba(255,255,255,0.03);
+             border-radius: 8px;
+             margin-bottom: 0.5rem;
+             transition: background 0.3s ease;
+         }
+ 
+         .transaction-item:hover {
+             background: rgba(255,255,255,0.08);
+         }
+ 
+         .transaction-info h4 {
+             font-size: 1rem;
+             margin-bottom: 0.25rem;
+         }
+ 
+         .transaction-info p {
+             color: var(--gray);
+             font-size: 0.85rem;
+         }
+ 
+         .transaction-amount {
+             text-align: right;
+         }
+ 
+         .transaction-amount .amount {
+             font-size: 1.1rem;
+             font-weight: 600;
+             color: var(--success);
+         }
+ 
+         .transaction-amount .time {
+             font-size: 0.8rem;
+             color: var(--gray);
+         }
+ 
+         /* POS Tab */
+         .pos-layout {
+             display: grid;
+             grid-template-columns: 1fr 350px;
+             gap: 1.5rem;
+         }
+ 
+         .products-section {
+             background: rgba(255,255,255,0.05);
+             border-radius: 16px;
+             padding: 1.5rem;
+             border: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         .products-grid {
+             display: grid;
+             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+             gap: 1rem;
+         }
+ 
+         .product-card {
+             background: rgba(255,255,255,0.08);
+             border-radius: 12px;
+             padding: 1.25rem;
+             text-align: center;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             border: 2px solid transparent;
+         }
+ 
+         .product-card:hover {
+             background: rgba(233,69,96,0.2);
+             border-color: var(--accent);
+             transform: translateY(-3px);
+         }
+ 
+         .product-icon {
+             width: 60px;
+             height: 60px;
+             background: linear-gradient(135deg, var(--accent), #ff6b6b);
+             border-radius: 12px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             margin: 0 auto 1rem;
+             font-size: 1.5rem;
+         }
+ 
+         .product-name {
+             font-weight: 600;
+             margin-bottom: 0.5rem;
+         }
+ 
+         .product-price {
+             font-size: 1.25rem;
+             font-weight: 700;
+             color: var(--success);
+         }
+ 
+         /* Cart */
+         .cart-section {
+             background: rgba(255,255,255,0.05);
+             border-radius: 16px;
+             padding: 1.5rem;
+             border: 1px solid rgba(255,255,255,0.1);
+             display: flex;
+             flex-direction: column;
+             height: fit-content;
+         }
+ 
+         .cart-header {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             margin-bottom: 1rem;
+             padding-bottom: 1rem;
+             border-bottom: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         .cart-items {
+             flex: 1;
+             max-height: 300px;
+             overflow-y: auto;
+         }
+ 
+         .cart-item {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 0.75rem;
+             background: rgba(255,255,255,0.05);
+             border-radius: 8px;
+             margin-bottom: 0.5rem;
+         }
+ 
+         .cart-item-info h4 {
+             font-size: 0.9rem;
+             margin-bottom: 0.25rem;
+         }
+ 
+         .cart-item-info .price {
+             color: var(--gray);
+             font-size: 0.85rem;
+         }
+ 
+         .cart-item-actions {
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+         }
+ 
+         .qty-btn {
+             width: 28px;
+             height: 28px;
+             border: none;
+             border-radius: 6px;
+             background: rgba(255,255,255,0.1);
+             color: var(--light);
+             cursor: pointer;
+             font-size: 1rem;
+             transition: all 0.3s ease;
+         }
+ 
+         .qty-btn:hover {
+             background: var(--accent);
+         }
+ 
+         .cart-item-qty {
+             min-width: 20px;
+             text-align: center;
+         }
+ 
+         .remove-btn {
+             background: none;
+             border: none;
+             color: var(--gray);
+             cursor: pointer;
+             padding: 0.25rem;
+             transition: color 0.3s ease;
+         }
+ 
+         .remove-btn:hover {
+             color: var(--accent);
+         }
+ 
+         .cart-summary {
+             margin-top: 1rem;
+             padding-top: 1rem;
+             border-top: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         .summary-row {
+             display: flex;
+             justify-content: space-between;
+             margin-bottom: 0.5rem;
+         }
+ 
+         .summary-row.total {
+             font-size: 1.25rem;
+             font-weight: 700;
+             margin-top: 0.5rem;
+             padding-top: 0.5rem;
+             border-top: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         .checkout-btn {
+             width: 100%;
+             padding: 1rem;
+             background: linear-gradient(135deg, var(--success), #00b894);
+             border: none;
+             border-radius: 8px;
+             color: white;
+             font-size: 1.1rem;
+             font-weight: 600;
+             cursor: pointer;
+             margin-top: 1rem;
+             transition: all 0.3s ease;
+         }
+ 
+         .checkout-btn:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 5px 20px rgba(0,217,165,0.3);
+         }
+ 
+         .checkout-btn:disabled {
+             background: var(--gray);
+             cursor: not-allowed;
+             transform: none;
+             box-shadow: none;
+         }
+ 
+         /* Checkout Modal */
+         .modal-overlay {
+             position: fixed;
+             top: 0;
+             left: 0;
+             right: 0;
+             bottom: 0;
+             background: rgba(0,0,0,0.8);
+             display: none;
+             align-items: center;
+             justify-content: center;
+             z-index: 1000;
+         }
+ 
+         .modal-overlay.active {
+             display: flex;
+         }
+ 
+         .modal {
+             background: var(--secondary);
+             border-radius: 16px;
+             padding: 2rem;
+             width: 90%;
+             max-width: 400px;
+             border: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         .modal h2 {
+             margin-bottom: 1.5rem;
+             text-align: center;
+         }
+ 
+         .modal-amount {
+             text-align: center;
+             margin-bottom: 1.5rem;
+         }
+ 
+         .modal-amount .label {
+             color: var(--gray);
+             font-size: 0.9rem;
+         }
+ 
+         .modal-amount .value {
+             font-size: 2.5rem;
+             font-weight: 700;
+             color: var(--success);
+         }
+ 
+         .cash-input-group {
+             margin-bottom: 1rem;
+         }
+ 
+         .cash-input-group label {
+             display: block;
+             margin-bottom: 0.5rem;
+             color: var(--gray);
+         }
+ 
+         .cash-input {
+             width: 100%;
+             padding: 1rem;
+             background: rgba(255,255,255,0.1);
+             border: 2px solid rgba(255,255,255,0.2);
+             border-radius: 8px;
+             color: white;
+             font-size: 1.5rem;
+             text-align: center;
+         }
+ 
+         .cash-input:focus {
+             outline: none;
+             border-color: var(--accent);
+         }
+ 
+         .change-display {
+             text-align: center;
+             padding: 1rem;
+             background: rgba(0,217,165,0.1);
+             border-radius: 8px;
+             margin-bottom: 1.5rem;
+         }
+ 
+         .change-display .label {
+             color: var(--gray);
+             font-size: 0.9rem;
+         }
+ 
+         .change-display .value {
+             font-size: 2rem;
+             font-weight: 700;
+             color: var(--success);
+         }
+ 
+         .modal-actions {
+             display: flex;
+             gap: 1rem;
+         }
+ 
+         .modal-btn {
+             flex: 1;
+             padding: 1rem;
+             border: none;
+             border-radius: 8px;
+             font-size: 1rem;
+             font-weight: 600;
+             cursor: pointer;
+             transition: all 0.3s ease;
+         }
+ 
+         .modal-btn.cancel {
+             background: rgba(255,255,255,0.1);
+             color: var(--light);
+         }
+ 
+         .modal-btn.confirm {
+             background: linear-gradient(135deg, var(--success), #00b894);
+             color: white;
+         }
+ 
+         .modal-btn:hover {
+             transform: translateY(-2px);
+         }
+ 
+         /* Sales Records Tab */
+         .records-filters {
+             display: flex;
+             gap: 1rem;
+             margin-bottom: 1.5rem;
+             flex-wrap: wrap;
+         }
+ 
+         .filter-group {
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+         }
+ 
+         .filter-group label {
+             color: var(--gray);
+             font-size: 0.9rem;
+         }
+ 
+         .filter-group input,
+         .filter-group select {
+             padding: 0.5rem 1rem;
+             background: rgba(255,255,255,0.1);
+             border: 1px solid rgba(255,255,255,0.2);
+             border-radius: 6px;
+             color: white;
+         }
+ 
+         .filter-group input:focus,
+         .filter-group select:focus {
+             outline: none;
+             border-color: var(--accent);
+         }
+ 
+         .records-table {
+             background: rgba(255,255,255,0.05);
+             border-radius: 16px;
+             overflow: hidden;
+             border: 1px solid rgba(255,255,255,0.1);
+         }
+ 
+         table {
+             width: 100%;
+             border-collapse: collapse;
+         }
+ 
+         th, td {
+             padding: 1rem;
+             text-align: left;
+         }
+ 
+         th {
+             background: rgba(255,255,255,0.1);
+             font-weight: 600;
+             color: var(--gray);
+             font-size: 0.85rem;
+             text-transform: uppercase;
+         }
+ 
+         td {
+             border-bottom: 1px solid rgba(255,255,255,0.05);
+         }
+ 
+         tr:hover td {
+             background: rgba(255,255,255,0.03);
+         }
+ 
+         .status-badge {
+             padding: 0.25rem 0.75rem;
+             border-radius: 20px;
+             font-size: 0.8rem;
+             font-weight: 500;
+         }
+ 
+         .status-badge.completed {
+             background: rgba(0,217,165,0.2);
+             color: var(--success);
+         }
+ 
+         .action-btn {
+             padding: 0.5rem 1rem;
+             background: rgba(255,255,255,0.1);
+             border: none;
+             border-radius: 6px;
+             color: var(--light);
+             cursor: pointer;
+             transition: all 0.3s ease;
+         }
+ 
+         .action-btn:hover {
+             background: var(--accent);
+         }
+ 
+         /* Empty State */
+         .empty-state {
+             text-align: center;
+             padding: 3rem;
+             color: var(--gray);
+         }
+ 
+         .empty-state i {
+             font-size: 3rem;
+             margin-bottom: 1rem;
+             opacity: 0.5;
+         }
+ 
+         /* Scrollbar */
+         ::-webkit-scrollbar {
+             width: 8px;
+         }
+ 
+         ::-webkit-scrollbar-track {
+             background: rgba(255,255,255,0.05);
+         }
+ 
+         ::-webkit-scrollbar-thumb {
+             background: rgba(255,255,255,0.2);
+             border-radius: 4px;
+         }
+ 
+         ::-webkit-scrollbar-thumb:hover {
+             background: rgba(255,255,255,0.3);
+         }
+ 
+         /* Responsive */
+         @media (max-width: 768px) {
+             .pos-layout {
+                 grid-template-columns: 1fr;
+             }
+ 
+             .nav-tabs {
+                 overflow-x: auto;
+                 flex-wrap: nowrap;
+             }
+ 
+             .dashboard-stats {
+                 grid-template-columns: 1fr;
+             }
+         }
+     </style>
+ </head>
+ <body>
+     <!-- Header -->
+     <header class="header">
+         <div class="logo">
+             <div class="logo-icon">R</div>
+             <div>
+                 <h1>Riyo Co and Limited</h1>
+                 <p class="header-date">Point of Sale System</p>
+             </div>
+         </div>
+         <div class="header-date" id="currentDate"></div>
+     </header>
+ 
+     <!-- Navigation Tabs -->
+     <nav class="nav-tabs">
+         <button class="nav-tab active" data-tab="dashboard">
+             <i class="fas fa-chart-line"></i> Dashboard
+         </button>
+         <button class="nav-tab" data-tab="pos">
+             <i class="fas fa-cash-register"></i> POS / Sales
+         </button>
+         <button class="nav-tab" data-tab="records">
+             <i class="fas fa-file-invoice"></i> Sales Records
+         </button>
+     </nav>
+ 
+     <!-- Main Content -->
+     <main class="main-content">
+         <!-- Dashboard Tab -->
+         <div class="tab-content active" id="dashboard">
+             <div class="dashboard-stats">
+                 <div class="stat-card">
+                     <div class="stat-icon income">
+                         <i class="fas fa-peso-sign"></i>
+                     </div>
+                     <div class="stat-value" id="totalIncome">₱0.00</div>
+                     <div class="stat-label">Total Income</div>
+                     <div class="stat-change positive" id="incomeChange">+0% from last month</div>
+                 </div>
+                 <div class="stat-card">
+                     <div class="stat-icon sales">
+                         <i class="fas fa-shopping-cart"></i>
+                     </div>
+                     <div class="stat-value" id="totalSales">0</div>
+                     <div class="stat-label">Total Transactions</div>
+                     <div class="stat-change positive" id="salesChange">+0% from last month</div>
+                 </div>
+                 <div class="stat-card">
+                     <div class="stat-icon items">
+                         <i class="fas fa-box"></i>
+                     </div>
+                     <div class="stat-value" id="totalItems">0</div>
+                     <div class="stat-label">Items Sold</div>
+                     <div class="stat-change positive" id="itemsChange">+0% from last month</div>
+                 </div>
+                 <div class="stat-card">
+                     <div class="stat-icon profit">
+                         <i class="fas fa-chart-pie"></i>
+                     </div>
+                     <div class="stat-value" id="avgTransaction">₱0.00</div>
+                     <div class="stat-label">Avg. Transaction</div>
+                     <div class="stat-change positive">Today</div>
+                 </div>
+             </div>
+ 
+             <div class="recent-section">
+                 <h3 class="section-title">
+                     <i class="fas fa-clock"></i> Recent Transactions
+                 </h3>
+                 <div class="transactions-list" id="recentTransactions">
+                     <!-- Transactions will be populated here -->
+                 </div>
+             </div>
+         </div>
+ 
+         <!-- POS Tab -->
+         <div class="tab-content" id="pos">
+             <div class="pos-layout">
+                 <!-- Products Section -->
+                 <div class="products-section">
+                     <h3 class="section-title">
+                         <i class="fas fa-box-open"></i> Products
+                     </h3>
+                     <div class="products-grid" id="productsGrid">
+                         <!-- Products will be populated here -->
+                     </div>
+                 </div>
+ 
+                 <!-- Cart Section -->
+                 <div class="cart-section">
+                     <div class="cart-header">
+                         <h3><i class="fas fa-shopping-basket"></i> Cart</h3>
+                         <span id="cartCount">0 items</span>
+                     </div>
+                     <div class="cart-items" id="cartItems">
+                         <!-- Cart items will be populated here -->
+                     </div>
+                     <div class="cart-summary">
+                         <div class="summary-row">
+                             <span>Subtotal</span>
+                             <span id="cartSubtotal">₱0.00</span>
+                         </div>
+                         <div class="summary-row">
+                             <span>Tax (0%)</span>
+                             <span>₱0.00</span>
+                         </div>
+                         <div class="summary-row total">
+                             <span>Total</span>
+                             <span id="cartTotal">₱0.00</span>
+                         </div>
+                     </div>
+                     <button class="checkout-btn" id="checkoutBtn" disabled onclick="openCheckout()">
+                         <i class="fas fa-credit-card"></i> Checkout
+                     </button>
+                 </div>
+             </div>
+         </div>
+ 
+         <!-- Sales Records Tab -->
+         <div class="tab-content" id="records">
+             <div class="records-filters">
+                 <div class="filter-group">
+                     <label>Date From:</label>
+                     <input type="date" id="dateFrom">
+                 </div>
+                 <div class="filter-group">
+                     <label>Date To:</label>
+                     <input type="date" id="dateTo">
+                 </div>
+                 <div class="filter-group">
+                     <label>Search:</label>
+                     <input type="text" id="searchInput" placeholder="Search transaction...">
+                 </div>
+                 <button class="action-btn" onclick="filterRecords()">
+                     <i class="fas fa-search"></i> Filter
+                 </button>
+                 <button class="action-btn" onclick="exportRecords()">
+                     <i class="fas fa-download"></i> Export
+                 </button>
+             </div>
+             <div class="records-table">
+                 <table>
+                     <thead>
+                         <tr>
+                             <th>Transaction ID</th>
+                             <th>Date & Time</th>
+                             <th>Items</th>
+                             <th>Total</th>
+                             <th>Cash Given</th>
+                             <th>Change</th>
+                             <th>Status</th>
+                             <th>Action</th>
+                         </tr>
+                     </thead>
+                     <tbody id="recordsTableBody">
+                         <!-- Records will be populated here -->
+                     </tbody>
+                 </table>
+             </div>
+         </div>
+     </main>
+ 
+     <!-- Checkout Modal -->
+     <div class="modal-overlay" id="checkoutModal">
+         <div class="modal">
+             <h2><i class="fas fa-money-bill-wave"></i> Checkout</h2>
+             <div class="modal-amount">
+                 <div class="label">Total Amount Due</div>
+                 <div class="value" id="modalTotal">₱0.00</div>
+             </div>
+             <div class="cash-input-group">
+                 <label><i class="fas fa-money-bill"></i> Cash Received</label>
+                 <input type="number" class="cash-input" id="cashInput" placeholder="0.00" oninput="calculateChange()">
+             </div>
+             <div class="change-display">
+                 <div class="label">Change</div>
+                 <div class="value" id="changeDisplay">₱0.00</div>
+             </div>
+             <div class="modal-actions">
+                 <button class="modal-btn cancel" onclick="closeCheckout()">Cancel</button>
+                <button class="modal-btn print" id="printReceipt" onclick="printReceiptAsPDF()" style="display:none;">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                 <button class="modal-btn confirm" id="confirmCheckout" onclick="processCheckout()" disabled>
+                     <i class="fas fa-check"></i> Complete
+                 </button>
+             </div>
+         </div>
+     </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal">
+            <h2><i class="fas fa-receipt"></i> Transaction Receipt</h2>
+            <div id="receiptContent" class="receipt-content"></div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeReceipt()">Close</button>
+                <button class="modal-btn print" onclick="printReceiptAsPDF()">
+                    <i class="fas fa-print"></i> Print / Save PDF
+                </button>
+            </div>
+        </div>
+    </div>
+ 
+     <script>
+         // Product Data
+         const products = [
+             { id: 1, name: 'Income Tracker', price: 120, icon: 'fa-wallet' },
+             { id: 2, name: 'Budget Tracker', price: 200, icon: 'fa-chart-bar' },
+             { id: 3, name: 'Business Management System', price: 300, icon: 'fa-briefcase' },
+             { id: 4, name: 'Attendance Tracker', price: 500, icon: 'fa-users' }
+         ];
+ 
+         // State
+         let cart = [];
+         let sales = [];
+         let currentTotal = 0;
+ 
+         // Initialize
+         document.addEventListener('DOMContentLoaded', () => {
+             setCurrentDate();
+             renderProducts();
+             loadSalesFromStorage();
+             updateDashboard();
+             renderRecentTransactions();
+             renderSalesRecords();
+         });
+ 
+         // Set Current Date
+         function setCurrentDate() {
+             const now = new Date();
+             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+             document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+         }
+ 
+         // Tab Navigation
+         document.querySelectorAll('.nav-tab').forEach(tab => {
+             tab.addEventListener('click', () => {
+                 document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                 
+                 tab.classList.add('active');
+                 document.getElementById(tab.dataset.tab).classList.add('active');
+             });
+         });
+ 
+         // Render Products
+         function renderProducts() {
+             const grid = document.getElementById('productsGrid');
+             grid.innerHTML = products.map(product => `
+                 <div class="product-card" onclick="addToCart(${product.id})">
+                     <div class="product-icon">
+                         <i class="fas ${product.icon}"></i>
+                     </div>
+                     <div class="product-name">${product.name}</div>
+                     <div class="product-price">₱${product.price.toFixed(2)}</div>
+                 </div>
+             `).join('');
+         }
+ 
+         // Add to Cart
+         function addToCart(productId) {
+             const product = products.find(p => p.id === productId);
+             const existingItem = cart.find(item => item.id === productId);
+ 
+             if (existingItem) {
+                 existingItem.quantity++;
+             } else {
+                 cart.push({ ...product, quantity: 1 });
+             }
+ 
+             renderCart();
+         }
+ 
+         // Render Cart
+         function renderCart() {
+             const cartItems = document.getElementById('cartItems');
+             const cartCount = document.getElementById('cartCount');
+             const cartSubtotal = document.getElementById('cartSubtotal');
+             const cartTotal = document.getElementById('cartTotal');
+             const checkoutBtn = document.getElementById('checkoutBtn');
+ 
+             let totalItems = 0;
+             let subtotal = 0;
+ 
+             if (cart.length === 0) {
+                 cartItems.innerHTML = `
+                     <div class="empty-state">
+                         <i class="fas fa-shopping-basket"></i>
+                         <p>Cart is empty</p>
+                     </div>
+                 `;
+             } else {
+                 cartItems.innerHTML = cart.map(item => {
+                     totalItems += item.quantity;
+                     subtotal += item.price * item.quantity;
+                     return `
+                         <div class="cart-item">
+                             <div class="cart-item-info">
+                                 <h4>${item.name}</h4>
+                                 <span class="price">₱${item.price.toFixed(2)} each</span>
+                             </div>
+                             <div class="cart-item-actions">
+                                 <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                 <span class="cart-item-qty">${item.quantity}</span>
+                                 <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                                 <button class="remove-btn" onclick="removeFromCart(${item.id})">
+                                     <i class="fas fa-trash"></i>
+                                 </button>
+                             </div>
+                         </div>
+                     `;
+                 }).join('');
+             }
+ 
+             currentTotal = subtotal;
+             cartCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+             cartSubtotal.textContent = `₱${subtotal.toFixed(2)}`;
+             cartTotal.textContent = `₱${subtotal.toFixed(2)}`;
+             checkoutBtn.disabled = cart.length === 0;
+         }
+ 
+         // Update Quantity
+         function updateQuantity(productId, change) {
+             const item = cart.find(i => i.id === productId);
+             if (item) {
+                 item.quantity += change;
+                 if (item.quantity <= 0) {
+                     cart = cart.filter(i => i.id !== productId);
+                 }
+             }
+             renderCart();
+         }
+ 
+         // Remove from Cart
+         function removeFromCart(productId) {
+             cart = cart.filter(item => item.id !== productId);
+             renderCart();
+         }
+ 
+         // Checkout Functions
+         function openCheckout() {
+             document.getElementById('checkoutModal').classList.add('active');
+             document.getElementById('modalTotal').textContent = `₱${currentTotal.toFixed(2)}`;
+             document.getElementById('cashInput').value = '';
+             document.getElementById('changeDisplay').textContent = '₱0.00';
+             document.getElementById('confirmCheckout').disabled = true;
+         }
+ 
+         function closeCheckout() {
+             document.getElementById('checkoutModal').classList.remove('active');
+         }
+ 
+         function calculateChange() {
+             const cash = parseFloat(document.getElementById('cashInput').value) || 0;
+             const change = cash - currentTotal;
+             const changeDisplay = document.getElementById('changeDisplay');
+             const confirmBtn = document.getElementById('confirmCheckout');
+ 
+             if (change >= 0) {
+                 changeDisplay.textContent = `₱${change.toFixed(2)}`;
+                 changeDisplay.style.color = 'var(--success)';
+                 confirmBtn.disabled = false;
+             } else {
+                 changeDisplay.textContent = `₱${change.toFixed(2)}`;
+                 changeDisplay.style.color = 'var(--accent)';
+                 confirmBtn.disabled = true;
+             }
+         }
+ 
+         function processCheckout() {
+             const cash = parseFloat(document.getElementById('cashInput').value);
+             const change = cash - currentTotal;
+ 
+             const transaction = {
+                 id: 'TXN' + Date.now(),
+                 date: new Date().toISOString(),
+                 items: [...cart],
+                 total: currentTotal,
+                 cash: cash,
+                 change: change,
+                 status: 'completed'
+             };
+ 
+             sales.unshift(transaction);
+             saveSalesToStorage();
+             updateDashboard();
+             renderRecentTransactions();
+             renderSalesRecords();
+ 
+             // Clear cart
+             cart = [];
+             renderCart();
+             closeCheckout();
+ 
+             // Show success message
+             alert(`Transaction Complete!\n\nTransaction ID: ${transaction.id}\nTotal: ₱${transaction.total.toFixed(2)}\nCash: ₱${cash.toFixed(2)}\nChange: ₱${change.toFixed(2)}`);
+         }
+ 
+         // Storage Functions
+         function saveSalesToStorage() {
+             localStorage.setItem('riyo_sales', JSON.stringify(sales));
+         }
+ 
+         function loadSalesFromStorage() {
+             const stored = localStorage.getItem('riyo_sales');
+             if (stored) {
+                 sales = JSON.parse(stored);
+             }
+         }
+ 
+         // Dashboard Functions
+         function updateDashboard() {
+             const totalIncome = sales.reduce((sum, s) => sum + s.total, 0);
+             const totalSales = sales.length;
+             const totalItems = sales.reduce((sum, s) => sum + s.items.reduce((i, item) => i + item.quantity, 0), 0);
+             const avgTransaction = totalSales > 0 ? totalIncome / totalSales : 0;
+ 
+             document.getElementById('totalIncome').textContent = `₱${totalIncome.toFixed(2)}`;
+             document.getElementById('totalSales').textContent = totalSales;
+             document.getElementById('totalItems').textContent = totalItems;
+             document.getElementById('avgTransaction').textContent = `₱${avgTransaction.toFixed(2)}`;
+         }
+ 
+         function renderRecentTransactions() {
+             const container = document.getElementById('recentTransactions');
+             const recent = sales.slice(0, 10);
+ 
+             if (recent.length === 0) {
+                 container.innerHTML = `
+                     <div class="empty-state">
+                         <i class="fas fa-receipt"></i>
+                         <p>No transactions yet</p>
+                     </div>
+                 `;
+             } else {
+                 container.innerHTML = recent.map(sale => {
+                     const date = new Date(sale.date);
+                     return `
+                         <div class="transaction-item">
+                             <div class="transaction-info">
+                                 <h4>${sale.id}</h4>
+                                 <p>${sale.items.map(i => `${i.name} x${i.quantity}`).join(', ')}</p>
+                             </div>
+                             <div class="transaction-amount">
+                                 <div class="amount">₱${sale.total.toFixed(2)}</div>
+                                 <div class="time">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                             </div>
+                         </div>
+                     `;
+                 }).join('');
+             }
+         }
+ 
+         // Sales Records Functions
+         function renderSalesRecords() {
+             const tbody = document.getElementById('recordsTableBody');
+             
+             if (sales.length === 0) {
+                 tbody.innerHTML = `
+                     <tr>
+                         <td colspan="8">
+                             <div class="empty-state">
+                                 <i class="fas fa-file-invoice"></i>
+                                 <p>No sales records found</p>
+                             </div>
+                         </td>
+                     </tr>
+                 `;
+             } else {
+                 tbody.innerHTML = sales.map(sale => {
+                     const date = new Date(sale.date);
+                     return `
+                         <tr>
+                             <td>${sale.id}</td>
+                             <td>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</td>
+                             <td>${sale.items.map(i => `${i.name} x${i.quantity}`).join(', ')}</td>
+                             <td><strong>₱${sale.total.toFixed(2)}</strong></td>
+                             <td>₱${sale.cash.toFixed(2)}</td>
+                             <td>₱${sale.change.toFixed(2)}</td>
+                             <td><span class="status-badge ${sale.status}">${sale.status}</span></td>
+                             <td>
+                                 <button class="action-btn" onclick="viewTransaction('${sale.id}')">
+                                     <i class="fas fa-eye"></i>
+                                 </button>
+                             </td>
+                         </tr>
+                     `;
+                 }).join('');
+             }
+         }
+ 
+         function filterRecords() {
+             const dateFrom = document.getElementById('dateFrom').value;
+             const dateTo = document.getElementById('dateTo').value;
+             const search = document.getElementById('searchInput').value.toLowerCase();
+ 
+             let filtered = [...sales];
+ 
+             if (dateFrom) {
+                 filtered = filtered.filter(s => new Date(s.date) >= new Date(dateFrom));
+             }
+             if (dateTo) {
+                 filtered = filtered.filter(s => new Date(s.date) <= new Date(dateTo));
+             }
+             if (search) {
+                 filtered = filtered.filter(s => 
+                     s.id.toLowerCase().includes(search) ||
+                     s.items.some(i => i.name.toLowerCase().includes(search))
+                 );
+             }
+ 
+             const tbody = document.getElementById('recordsTableBody');
+             if (filtered.length === 0) {
+                 tbody.innerHTML = `
+                     <tr>
+                         <td colspan="8">
+                             <div class="empty-state">
+                                 <i class="fas fa-search"></i>
+                                 <p>No records found matching filters</p>
+                             </div>
+                         </td>
+                     </tr>
+                 `;
+             } else {
+                 tbody.innerHTML = filtered.map(sale => {
+                     const date = new Date(sale.date);
+                     return `
+                         <tr>
+                             <td>${sale.id}</td>
+                             <td>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</td>
+                             <td>${sale.items.map(i => `${i.name} x${i.quantity}`).join(', ')}</td>
+                             <td><strong>₱${sale.total.toFixed(2)}</strong></td>
+                             <td>₱${sale.cash.toFixed(2)}</td>
+                             <td>₱${sale.change.toFixed(2)}</td>
+                             <td><span class="status-badge ${sale.status}">${sale.status}</span></td>
+                             <td>
+                                 <button class="action-btn" onclick="viewTransaction('${sale.id}')">
+                                     <i class="fas fa-eye"></i>
+                                 </button>
+                             </td>
+                         </tr>
+                     `;
+                 }).join('');
+             }
+         }
+ 
+         function viewTransaction(id) {
+             const sale = sales.find(s => s.id === id);
+             if (sale) {
+                 alert(`Transaction Details\n\nID: ${sale.id}\nDate: ${new Date(sale.date).toLocaleString()}\n\nItems:\n${sale.items.map(i => `- ${i.name} x${i.quantity} = ₱${(i.price * i.quantity).toFixed(2)}`).join('\n')}\n\nTotal: ₱${sale.total.toFixed(2)}\nCash: ₱${sale.cash.toFixed(2)}\nChange: ₱${sale.change.toFixed(2)}`);
+             }
+         }
+ 
+         function exportRecords() {
+             let csv = 'Transaction ID,Date,Items,Total,Cash,Change,Status\n';
+             sales.forEach(sale => {
+                 const date = new Date(sale.date).toLocaleString();
+                 const items = sale.items.map(i => `${i.name} x${i.quantity}`).join('; ');
+                 csv += `${sale.id},"${date}","${items}",${sale.total},${sale.cash},${sale.change},${sale.status}\n`;
+             });
+ 
+             const blob = new Blob([csv], { type: 'text/csv' });
+             const url = window.URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             a.download = `riyo_sales_${new Date().toISOString().split('T')[0]}.csv`;
+             a.click();
+         }
+     </script>
+ </body>
+ </html>
